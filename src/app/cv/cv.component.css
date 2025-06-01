@@ -1,5 +1,5 @@
 .cv-container {
-  height: 100vh;
+  height: calc(100vh - 70px); /* Subtract header height */
   display: flex;
   flex-direction: column;
   margin: 0;
