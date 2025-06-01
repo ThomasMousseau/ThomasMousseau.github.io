@@ -1,11 +1,12 @@
 :host {
   display: block;
-  min-height: 100vh; /* Ensure component attempts to fill viewport height */
+  height: calc(100vh - 70px); /* Account for header height */
   background-color: white;
   color: black;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow: hidden; /* Prevent any scrolling */
 }
 
 .home-container {
@@ -13,10 +14,11 @@
   flex-direction: column;
   justify-content: center; /* Vertically center content */
   align-items: center; /* Horizontally center content */
-  height: 100vh; /* Make the container fill the host's height */
+  height: 100%; /* Use full height of parent */
   text-align: center;
   padding: 20px; /* Add some padding around the content */
   box-sizing: border-box;
+  overflow: hidden; /* Prevent scrolling within container */
 }
 
 .home-container h1 {
