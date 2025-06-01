@@ -1,0 +1,61 @@
+:host {
+  display: block;
+  min-height: 100vh; /* Ensure component attempts to fill viewport height */
+  background-color: white;
+  color: black;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Vertically center content */
+  align-items: center; /* Horizontally center content */
+  height: 100vh; /* Make the container fill the host's height */
+  text-align: center;
+  padding: 20px; /* Add some padding around the content */
+  box-sizing: border-box;
+}
+
+.home-container h1 {
+  font-size: 3rem; /* Adjust size as preferred */
+  font-weight: 500; /* Slightly bolder than normal, but not too heavy */
+  color: black; /* Explicitly black */
+  margin: 0 0 20px 0; /* Adjusted space below the name for description */
+}
+
+.home-container .description {
+  font-size: 1.1rem;
+  color: #333; /* Slightly lighter than pure black for differentiation */
+  margin-bottom: 30px; /* Space between description and nav links */
+}
+
+.home-container nav {
+  display: flex; /* Enable flexbox for vertical alignment */
+  flex-direction: column; /* Stack links vertically */
+  align-items: center; /* Center links horizontally */
+}
+
+.home-container nav a {
+  color: black; /* Explicitly black */
+  text-decoration: none;
+  margin: 10px 0; /* Adjusted margin for vertical spacing */
+  font-size: 1.25rem; /* Adjust size as preferred */
+  padding: 8px 15px; /* Clickable area */
+  border-radius: 4px; /* Slightly rounded corners for a softer look, optional */
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* Smooth hover effect */
+}
+
+.home-container nav a:hover,
+.home-container nav a:focus { /* Added focus for accessibility */
+  text-decoration: none; /* Keep no underline on hover for a cleaner look */
+  background-color: #f0f0f0; /* Subtle background on hover/focus */
+}
+
+/* If using Angular Router and want to style active links */
+.home-container nav a.active-link {
+  font-weight: bold;
+  /* background-color: #e0e0e0; */ /* Example active style, uncomment or modify if needed */
+}
