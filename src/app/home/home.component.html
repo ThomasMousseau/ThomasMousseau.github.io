@@ -1,9 +1,12 @@
 <div class="home-container">
-  <h1 class="typewriter">{{ displayedName }}<span class="cursor" [class.blink]="showNameCursor" *ngIf="showNameCursor">|</span></h1>
-  <p class="description typewriter">{{ displayedDescription }}<span class="cursor" [class.blink]="showDescCursor" *ngIf="showDescCursor">|</span></p>
-  <nav class="nav-container" *ngIf="showNav">
-    <a routerLink="/cv" routerLinkActive="active-link" class="typewriter">{{ displayedCv }}<span class="cursor" [class.blink]="showCvCursor" *ngIf="showCvCursor">|</span></a>
-    <a routerLink="/about" routerLinkActive="active-link" class="typewriter">{{ displayedAbout }}<span class="cursor" [class.blink]="showAboutCursor" *ngIf="showAboutCursor">|</span></a>
-    <a routerLink="/publications" routerLinkActive="active-link" class="typewriter">{{ displayedPublications }}<span class="cursor" [class.blink]="showPublicationsCursor" *ngIf="showPublicationsCursor">|</span></a>
-  </nav>
+  <!-- Main Content -->
+  <div class="content-container">
+    <h1 class="typewriter">{{ displayedName }}<span class="cursor" [class.blink]="showNameCursor" *ngIf="showNameCursor">|</span></h1>
+    <p class="description typewriter">{{ displayedDescription }}<span class="cursor" [class.blink]="showDescCursor" *ngIf="showDescCursor">|</span></p>
+    <nav class="nav-container" *ngIf="showNav">
+      <a routerLink="/cv" routerLinkActive="active-link" class="typewriter">{{ displayedCv }}<span class="cursor" [class.blink]="showCvCursor" *ngIf="showCvCursor">|</span></a>
+      <a routerLink="/about" routerLinkActive="active-link" class="typewriter">{{ displayedAbout }}<span class="cursor" [class.blink]="showAboutCursor" *ngIf="showAboutCursor">|</span></a>
+      <a routerLink="/publications" routerLinkActive="active-link" class="typewriter">{{ displayedPublications }}<span class="cursor" [class.blink]="showPublicationsCursor" *ngIf="showPublicationsCursor">|</span></a>
+    </nav>
+  </div>
 </div>
