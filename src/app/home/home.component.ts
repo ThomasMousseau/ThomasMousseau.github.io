@@ -13,6 +13,8 @@ export class HomeComponent implements OnInit {
   displayedName = '';
   displayedDescription = '';
   showNav = false;
+  showNameCursor = true;
+  showDescCursor = false;
   
   private readonly fullName = 'Thomas Mousseau';
   private readonly fullDescription = 'Student Researcher | Software Engineer';
@@ -28,11 +30,18 @@ export class HomeComponent implements OnInit {
     // Type the name
     await this.typeText(this.fullName, (char) => this.displayedName += char);
     
+    // Hide name cursor
+    this.showNameCursor = false;
+    
     // Pause between name and description
     await this.delay(this.pauseBetweenLines);
     
-    // Type the description
+    // Show description cursor and type the description
+    this.showDescCursor = true;
     await this.typeText(this.fullDescription, (char) => this.displayedDescription += char);
+    
+    // Hide description cursor
+    this.showDescCursor = false;
     
     // Pause before showing navigation
     await this.delay(this.pauseBeforeNav);

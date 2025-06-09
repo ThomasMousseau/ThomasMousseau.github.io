@@ -1,7 +1,7 @@
 <div class="home-container">
-  <h1 class="typewriter">{{ displayedName }}<span class="cursor" [class.blink]="displayedName.length < 15">|</span></h1>
-  <p class="description typewriter">{{ displayedDescription }}<span class="cursor" [class.blink]="displayedDescription.length < 37 && displayedName.length >= 15">|</span></p>
-  <nav *ngIf="showNav" class="fade-in">
+  <h1 class="typewriter">{{ displayedName }}<span class="cursor" [class.blink]="showNameCursor" *ngIf="showNameCursor">|</span></h1>
+  <p class="description typewriter">{{ displayedDescription }}<span class="cursor" [class.blink]="showDescCursor" *ngIf="showDescCursor">|</span></p>
+  <nav class="nav-container" [class.visible]="showNav">
     <a routerLink="/cv" routerLinkActive="active-link">CV</a>
     <a routerLink="/about" routerLinkActive="active-link">About Me</a>
     <a routerLink="/publications" routerLinkActive="active-link">Publications</a>
