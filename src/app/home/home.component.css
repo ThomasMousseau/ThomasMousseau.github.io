@@ -61,3 +61,40 @@
   font-weight: bold;
   /* background-color: #e0e0e0; */ /* Example active style, uncomment or modify if needed */
 }
+
+/* Typewriter effect styles */
+.typewriter {
+  position: relative;
+}
+
+.cursor {
+  display: inline-block;
+  color: black;
+  font-weight: normal;
+  animation: none;
+}
+
+.cursor.blink {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Fade in animation for navigation */
+.fade-in {
+  animation: fadeIn 0.8s ease-in;
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
