@@ -1,0 +1,14 @@
+.publications-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 70px); /* Account for header height */
+  padding: 2rem;
+}
+
+.coming-soon {
+  color: #666;
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 0;
+}
