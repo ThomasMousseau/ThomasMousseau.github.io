@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, PLATFORM_ID, Inject, AfterViewInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AnimationService } from '../services/animation.service';
 import { Subscription } from 'rxjs';
 
@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   displayedName = '';
   displayedDescription = '';
   displayedCv = '';
@@ -27,6 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private animationInProgress = false;
   private animationSubscription: Subscription | null = null;
   componentReady = false;  // Flag to prevent early template rendering
+  private isBrowser: boolean;
   
   private readonly fullName = 'Thomas Mousseau';
   private readonly fullDescription = 'Student Researcher | Software Engineer';
@@ -38,9 +39,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   private readonly pauseBeforeNav = 800; // pause before showing navigation
   private readonly pauseBetweenNavItems = 300; // pause between navigation items
 
-  constructor(private cdr: ChangeDetectorRef, private animationService: AnimationService) {}
+  constructor(private cdr: ChangeDetectorRef, private animationService: AnimationService, @Inject(PLATFORM_ID) private platformId: Object) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   ngOnInit() {
+    // Only start animations in the browser
+    if (!this.isBrowser) {
+      this.componentReady = true;
+      return;
+    }
+
     // Subscribe to animation changes from the service
     this.animationSubscription = this.animationService.animationsEnabled$.subscribe(enabled => {
       // Stop any ongoing animation immediately
@@ -58,6 +67,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.showAllContent();
       }
     });
+  }
+
+  ngAfterViewInit() {
+    // Ensure hydration is complete before starting animations
+    if (this.isBrowser) {
+      this.cdr.detectChanges();
+    }
   }
 
   ngOnDestroy() {
