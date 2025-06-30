@@ -27,6 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   private animationInProgress = false;
   private animationSubscription: Subscription | null = null;
   componentReady = false;  // Flag to prevent early template rendering
+  contentVisible = false;  // Additional flag for opacity control
   private isBrowser: boolean;
   
   private readonly fullName = 'Thomas Mousseau';
@@ -44,29 +45,31 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    // Only start animations in the browser
+    // Don't show anything on server
     if (!this.isBrowser) {
-      this.componentReady = true;
       return;
     }
 
-    // Subscribe to animation changes from the service
-    this.animationSubscription = this.animationService.animationsEnabled$.subscribe(enabled => {
-      // Stop any ongoing animation immediately
-      this.animationInProgress = false;
-      
-      this.animationsEnabled = enabled;
-      this.resetState();
-      
-      // Mark component as ready
+    // Wait for next tick to ensure we're in browser
+    setTimeout(() => {
       this.componentReady = true;
+      this.contentVisible = true;
       
-      if (this.animationsEnabled) {
-        this.startTypewriterEffect();
-      } else {
-        this.showAllContent();
-      }
-    });
+      // Subscribe to animation changes from the service
+      this.animationSubscription = this.animationService.animationsEnabled$.subscribe(enabled => {
+        // Stop any ongoing animation immediately
+        this.animationInProgress = false;
+        
+        this.animationsEnabled = enabled;
+        this.resetState();
+        
+        if (this.animationsEnabled) {
+          this.startTypewriterEffect();
+        } else {
+          this.showAllContent();
+        }
+      });
+    }, 100); // Small delay to ensure browser is ready
   }
 
   ngAfterViewInit() {

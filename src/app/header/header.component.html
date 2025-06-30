@@ -3,9 +3,9 @@
     <a routerLink="/" class="home-btn">← Home</a>
     <!-- Animation Toggle Switch -->
     <button class="animation-toggle" 
-            [class.enabled]="animationService.animationsEnabled" 
+            [class.enabled]="animationsEnabled" 
             (click)="toggleAnimations()" 
-            [title]="animationService.animationsEnabled ? 'Disable animations' : 'Enable animations'">
+            [title]="animationsEnabled ? 'Disable animations' : 'Enable animations'">
     </button>
   </div>
   <div class="social-links">

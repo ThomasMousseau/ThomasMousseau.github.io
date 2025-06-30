@@ -9,6 +9,16 @@
   overflow: hidden; /* Prevent any scrolling */
 }
 
+/* Ensure content is completely hidden until ready */
+.content-container {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.content-container[style*="opacity: 1"] {
+  opacity: 1;
+}
+
 .home-container {
   display: flex;
   flex-direction: column;
