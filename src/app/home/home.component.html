@@ -1,6 +1,6 @@
 <div class="home-container">
   <!-- Main Content -->
-  <div class="content-container">
+  <div class="content-container" *ngIf="componentReady">
     <h1 class="typewriter">{{ displayedName }}<span class="cursor" [class.blink]="showNameCursor" *ngIf="showNameCursor">|</span></h1>
     <p class="description typewriter">{{ displayedDescription }}<span class="cursor" [class.blink]="showDescCursor" *ngIf="showDescCursor">|</span></p>
     <!-- Navigation container - always present to maintain layout -->

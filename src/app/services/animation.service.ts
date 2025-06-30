@@ -5,16 +5,20 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class AnimationService {
-  private animationsEnabledSubject = new BehaviorSubject<boolean>(true);
-  public animationsEnabled$ = this.animationsEnabledSubject.asObservable();
+  private animationsEnabledSubject: BehaviorSubject<boolean>;
+  public animationsEnabled$;
 
   constructor() {
-    // Only access localStorage in the browser
+    // Get the initial value synchronously if possible
+    let initialValue = true; // default
     if (typeof window !== 'undefined' && window.localStorage) {
       const savedPreference = localStorage.getItem('homeAnimationsEnabled');
-      const enabled = savedPreference !== null ? JSON.parse(savedPreference) : true;
-      this.animationsEnabledSubject.next(enabled);
+      initialValue = savedPreference !== null ? JSON.parse(savedPreference) : true;
     }
+    
+    // Initialize the subject with the correct value from the start
+    this.animationsEnabledSubject = new BehaviorSubject<boolean>(initialValue);
+    this.animationsEnabled$ = this.animationsEnabledSubject.asObservable();
   }
 
   get animationsEnabled(): boolean {

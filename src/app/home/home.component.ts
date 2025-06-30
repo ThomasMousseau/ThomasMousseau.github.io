@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   displayedAbout = '';
   displayedPublications = '';
   showNav = false;
-  showNameCursor = true;
+  showNameCursor = false;  // Start with false to prevent early showing
   showDescCursor = false;
   showCvCursor = false;
   showAboutCursor = false;
@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   animationsEnabled = true;
   private animationInProgress = false;
   private animationSubscription: Subscription | null = null;
+  componentReady = false;  // Flag to prevent early template rendering
   
   private readonly fullName = 'Thomas Mousseau';
   private readonly fullDescription = 'Student Researcher | Software Engineer';
@@ -48,14 +49,14 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.animationsEnabled = enabled;
       this.resetState();
       
-      // Small delay to ensure state is cleared before starting new animation
-      setTimeout(() => {
-        if (this.animationsEnabled) {
-          this.startTypewriterEffect();
-        } else {
-          this.showAllContent();
-        }
-      }, 10);
+      // Mark component as ready
+      this.componentReady = true;
+      
+      if (this.animationsEnabled) {
+        this.startTypewriterEffect();
+      } else {
+        this.showAllContent();
+      }
     });
   }
 
@@ -78,7 +79,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     
     // Reset navigation and cursors
     this.showNav = false;
-    this.showNameCursor = true;
+    this.showNameCursor = false;  // Start with false to prevent early showing
     this.showDescCursor = false;
     this.showCvCursor = false;
     this.showAboutCursor = false;
@@ -110,6 +111,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.animationInProgress = true;
     
     // Type the name
+    this.showNameCursor = true;
     await this.typeText(this.fullName, (char) => this.displayedName += char);
     if (!this.animationInProgress || !this.animationsEnabled) return;
     
