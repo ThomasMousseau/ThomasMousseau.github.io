@@ -59,19 +59,19 @@ export class HomeComponent implements OnInit {
     // Show navigation container and start typing navigation items
     this.showNav = true;
     
-    // Type CV
+    // Type CV (only show after text is typed)
     this.showCvCursor = true;
     await this.typeText(this.fullCv, (char) => this.displayedCv += char);
     this.showCvCursor = false;
     await this.delay(this.pauseBetweenNavItems);
     
-    // Type About Me
+    // Type About Me (only show after text is typed)
     this.showAboutCursor = true;
     await this.typeText(this.fullAbout, (char) => this.displayedAbout += char);
     this.showAboutCursor = false;
     await this.delay(this.pauseBetweenNavItems);
     
-    // Type Publications
+    // Type Publications (only show after text is typed)
     this.showPublicationsCursor = true;
     await this.typeText(this.fullPublications, (char) => this.displayedPublications += char);
     this.showPublicationsCursor = false;
