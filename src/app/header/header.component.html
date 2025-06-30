@@ -1,5 +1,13 @@
 <header class="app-header">
-  <a routerLink="/" class="home-btn">← Home</a>
+  <div class="left-section">
+    <a routerLink="/" class="home-btn">← Home</a>
+    <!-- Animation Toggle Switch -->
+    <button class="animation-toggle" 
+            [class.enabled]="animationService.animationsEnabled" 
+            (click)="toggleAnimations()" 
+            [title]="animationService.animationsEnabled ? 'Disable animations' : 'Enable animations'">
+    </button>
+  </div>
   <div class="social-links">
     <a href="https://linkedin.com/in/thomas-mousseau" target="_blank" class="social-link">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
