@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en" data-beasties-container="">
+<head>
+  <meta charset="utf-8">
+  <title>Website</title>
+  <base href="/ThomasMousseau.github.io/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    /* Initial loading animation styles */
+    #initial-loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.5s ease-out;
+    }
+
+    #initial-loading.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-spinner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .coffee-cup {
+      position: relative;
+      width: 60px;
+      height: 50px;
+      background: linear-gradient(145deg, #8B4513, #A0522D);
+      border-radius: 0 0 25px 25px;
+      margin-bottom: 20px;
+      animation: coffee-steam 2s ease-in-out infinite;
+    }
+
+    .coffee-cup::before {
+      content: '';
+      position: absolute;
+      top: 15px;
+      right: -15px;
+      width: 20px;
+      height: 25px;
+      border: 3px solid #8B4513;
+      border-left: none;
+      border-radius: 0 15px 15px 0;
+    }
+
+    .coffee-cup::after {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      right: 5px;
+      height: 35px;
+      background: linear-gradient(145deg, #2F1B14, #3D2B1F);
+      border-radius: 0 0 20px 20px;
+    }
+
+    .steam {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+    }
+
+    .steam-line {
+      width: 2px;
+      height: 20px;
+      background: linear-gradient(to top, rgba(255,255,255,0.8), rgba(255,255,255,0));
+      border-radius: 2px;
+      animation: steam-rise 1.5s ease-in-out infinite;
+    }
+
+    .steam-line:nth-child(1) { animation-delay: 0s; }
+    .steam-line:nth-child(2) { animation-delay: 0.2s; }
+    .steam-line:nth-child(3) { animation-delay: 0.4s; }
+
+    .code-brackets {
+      display: flex;
+      gap: 15px;
+      font-family: 'Courier New', monospace;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .bracket {
+      animation: bracket-pulse 1.2s ease-in-out infinite;
+    }
+
+    .bracket:nth-child(1) { animation-delay: 0s; }
+    .bracket:nth-child(2) { animation-delay: 0.3s; }
+    .bracket:nth-child(3) { animation-delay: 0.6s; }
+
+    @keyframes coffee-steam {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    @keyframes steam-rise {
+      0% { 
+        opacity: 0;
+        transform: translateY(10px) rotate(0deg);
+      }
+      50% {
+        opacity: 1;
+        transform: translateY(-5px) rotate(5deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-20px) rotate(-5deg);
+      }
+    }
+
+    @keyframes bracket-pulse {
+      0%, 100% { 
+        opacity: 0.3;
+        transform: scale(1);
+      }
+      50% { 
+        opacity: 1;
+        transform: scale(1.1);
+      }
+    }
+
+    .loading-text {
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      color: #333;
+      margin: 0;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    /* Hide app-root initially */
+    app-root {
+      opacity: 0;
+      transition: opacity 0.5s ease-in;
+    }
+
+    app-root.loaded {
+      opacity: 1;
+    }
+  </style>
+<style>*{font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace}html,body{margin:0;padding:0;height:100%;overflow-x:hidden}</style><link rel="stylesheet" href="styles-5DHVJE6Z.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles-5DHVJE6Z.css"></noscript></head>
+<body ngcm="">
+  <!-- Initial loading screen -->
+  <div id="initial-loading">
+    <div class="loading-spinner">
+      <div class="coffee-cup">
+        <div class="steam">
+          <div class="steam-line"></div>
+          <div class="steam-line"></div>
+          <div class="steam-line"></div>
+        </div>
+      </div>
+      <div class="code-brackets">
+        <span class="bracket">{</span>
+        <span class="bracket">}</span>
+        <span class="bracket">;</span>
+      </div>
+    </div>
+    <p class="loading-text">Brewing coffee...</p>
+  </div>
+
+  <app-root></app-root>
+
+  <script>
+    // Hide loading screen when Angular has loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wait for Angular to bootstrap
+      setTimeout(function() {
+        const loadingElement = document.getElementById('initial-loading');
+        const appRoot = document.querySelector('app-root');
+        
+        if (loadingElement && appRoot) {
+          // Start fade out animation
+          loadingElement.classList.add('fade-out');
+          appRoot.classList.add('loaded');
+          
+          // Remove loading element completely after animation
+          setTimeout(function() {
+            loadingElement.remove();
+          }, 500);
+        }
+      }, 1000); // Adjust this delay as needed
+    });
+  </script>
+<script src="polyfills-B6TNHZQ6.js" type="module"></script><script src="main-IXYL4WJW.js" type="module"></script></body>
+</html>
