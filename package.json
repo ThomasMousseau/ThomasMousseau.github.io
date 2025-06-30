@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:website": "node dist/website/server/server.mjs",
-    "deploy": "ng build --configuration production --base-href='/ThomasMousseau.github.io/' && npx angular-cli-ghpages --dir=dist/website/browser"
+    "deploy": "ng build --configuration production --base-href='/' && npx angular-cli-ghpages --dir=dist/website/browser"
   },
   "private": true,
   "dependencies": {
