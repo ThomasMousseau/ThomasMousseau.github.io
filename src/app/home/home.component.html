@@ -5,9 +5,9 @@
     <p class="description typewriter">{{ displayedDescription }}<span class="cursor" [class.blink]="showDescCursor" *ngIf="showDescCursor">|</span></p>
     <!-- Navigation container - always present to maintain layout -->
     <nav class="nav-container">
-      <a *ngIf="showNav && displayedCv" routerLink="/cv" routerLinkActive="active-link" class="typewriter">{{ displayedCv }}<span class="cursor" [class.blink]="showCvCursor" *ngIf="showCvCursor">|</span></a>
-      <a *ngIf="showNav && displayedAbout" routerLink="/about" routerLinkActive="active-link" class="typewriter">{{ displayedAbout }}<span class="cursor" [class.blink]="showAboutCursor" *ngIf="showAboutCursor">|</span></a>
-      <a *ngIf="showNav && displayedPublications" routerLink="/publications" routerLinkActive="active-link" class="typewriter">{{ displayedPublications }}<span class="cursor" [class.blink]="showPublicationsCursor" *ngIf="showPublicationsCursor">|</span></a>
+      <a *ngIf="showNav" routerLink="/cv" routerLinkActive="active-link" class="typewriter">{{ displayedCv }}<span class="cursor" [class.blink]="showCvCursor" *ngIf="showCvCursor">|</span></a>
+      <a *ngIf="showNav" routerLink="/about" routerLinkActive="active-link" class="typewriter">{{ displayedAbout }}<span class="cursor" [class.blink]="showAboutCursor" *ngIf="showAboutCursor">|</span></a>
+      <a *ngIf="showNav" routerLink="/publications" routerLinkActive="active-link" class="typewriter">{{ displayedPublications }}<span class="cursor" [class.blink]="showPublicationsCursor" *ngIf="showPublicationsCursor">|</span></a>
     </nav>
   </div>
 </div>

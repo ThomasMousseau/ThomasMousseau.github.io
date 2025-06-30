@@ -33,7 +33,26 @@ export class HomeComponent implements OnInit {
   private readonly pauseBetweenNavItems = 300; // pause between navigation items
 
   ngOnInit() {
+    // Reset all state to ensure clean start on every load
+    this.resetState();
     this.startTypewriterEffect();
+  }
+
+  private resetState() {
+    // Reset displayed text
+    this.displayedName = '';
+    this.displayedDescription = '';
+    this.displayedCv = '';
+    this.displayedAbout = '';
+    this.displayedPublications = '';
+    
+    // Reset navigation and cursors
+    this.showNav = false;
+    this.showNameCursor = true;
+    this.showDescCursor = false;
+    this.showCvCursor = false;
+    this.showAboutCursor = false;
+    this.showPublicationsCursor = false;
   }
 
   private async startTypewriterEffect() {
