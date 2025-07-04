@@ -15,6 +15,15 @@
       "request": "launch",
       "preLaunchTask": "npm: test",
       "url": "http://localhost:9876/debug.html"
+    },
+    {
+      "name": "Deploy to GitHub Pages",
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "npm: deploy",
+      "program": "${workspaceFolder}/package.json",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }
