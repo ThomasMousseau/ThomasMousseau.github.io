@@ -1,0 +1,24 @@
+<div class="container">
+  <div *ngIf="!showHearts">
+    <h1>Would you be my valentine?</h1>
+    <div class="buttons">
+      <button class="yes-btn" (click)="onYes()">Yes</button>
+      <button class="no-btn" (click)="onNo()">No</button>
+    </div>
+  </div>
+  <div *ngIf="showHearts">
+    <div class="slideshow">
+      <button class="arrow left" (click)="prevPhoto()">&#10094;</button>
+      <img [src]="'assets/photos/' + photos[currentIndex]" alt="Photo" class="photo">
+      <button class="arrow right" (click)="nextPhoto()">&#10095;</button>
+    </div>
+    <p class="message">I love you pookie &lt;3</p>
+    <div class="hearts">
+      <div class="heart">❤️</div>
+      <div class="heart">💖</div>
+      <div class="heart">💕</div>
+      <div class="heart">💗</div>
+      <div class="heart">💓</div>
+    </div>
+  </div>
+</div>
