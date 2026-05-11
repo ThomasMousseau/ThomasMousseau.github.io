@@ -1,0 +1,87 @@
+---
+title: 'Building Compressed Attention from First Principles'
+description: "Building intuition until we reach DeepSeek's compressed attention stack."
+date: 2026-05-11
+slug: building-compressed-attention-from-first-principles
+heroImage: /blog/images/placeholder.svg
+---
+
+import attentionDiagramSrc from './attention-score.svg?url';
+import SidenoteGroup from '../../components/SidenoteGroup.astro';
+
+In development...
+
+## Table of Contents
+
+- [1. Vanilla Attention](#1-vanilla-attention)
+  - [Prefilling](#prefilling)
+  - [Decoding](#decoding)
+- [2. The Quadratic Bottleneck](#2-the-quadratic-bottleneck)
+- [3. KV Caching and the Hardware Reality](#3-kv-caching-and-the-hardware-reality)
+  - [The Roofline Model](#the-roofline-model)
+  - [The Memory Bandwidth Wall](#the-memory-bandwidth-wall)
+- [4. Alternative Architectures: Mamba and Nemotron](#4-alternative-architectures-mamba-and-nemotron)
+- [5. DeepSeek V4: Extreme KV Compression](#5-deepseek-v4-extreme-kv-compression)
+  - [Compressed Sparse Attention (CSA)](#compressed-sparse-attention-csa)
+  - [Heavily Compressed Attention (HCA)](#heavily-compressed-attention-hca)
+- [6. Conclusion](#6-conclusion)
+
+
+## 1. Vanilla Attention
+
+
+| Category &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Symbol &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Shape &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description |
+| :--- | :--- | :--- | :--- |
+| **Parameters** | $W_Q, W_K$ | $d_{\text{em}} \times d_k$ | Query and Key projection weights |
+| | $W_V$ | $d_{\text{em}} \times d_v$ | Value projection weights |
+| | $W_O$ | $d_v \times d_{\text{em}}$ | Output projection weights |
+| **Projections** | $X$ | $\text{seq} \times d_{\text{em}}$ | Input token embeddings |
+| | $Q, K$ | $\text{seq} \times d_k$ | Projected queries and keys |
+| | $V$ | $\text{seq} \times d_v$ | Projected values |
+| **Intermediates** | $A$ | $\text{seq} \times \text{seq}$ | Attention scores |
+| | $O$ | $\text{seq} \times d_v$ | Weighted value aggregation |
+| | $\Delta X$ | $\text{seq} \times d_{\text{em}}$ | Attention update projected back to embedding space |
+| | $X_{\text{attn}}$ | $\text{seq} \times d_{\text{em}}$ | Attention output after residual addition |
+
+---
+
+<SidenoteGroup n={1}>
+  <div slot="note">
+    This figure is a schematic of an <strong>attention score matrix</strong>: each cell shows how
+    strongly one query position attends to one key position, before softmax turns those scores into
+    weights.
+  </div>
+  <div class="blog-algo-row">
+    <div class="blog-algo-row__math">
+$$
+\begin{array}{l}
+\textbf{Vanilla Attention (Single Head)} \\[4pt]
+\hline \\[-6pt]
+\begin{array}{r|l}
+1 & Q = XW_Q, \quad K = XW_K, \quad V = XW_V \\[6pt]
+2 & A = \text{softmax}\!\left(\dfrac{QK^T}{\sqrt{d_k}}\right) \\[6pt]
+3 & O = AV \\[6pt]
+4 & \Delta X = OW_O \\[6pt]
+5 & X_{\text{attn}} = X + \Delta X \\
+\end{array}
+\end{array}
+$$
+    </div>
+    <div class="blog-algo-row__figure">
+      <img
+        src={attentionDiagramSrc}
+        alt="Attention score diagram"
+        width={800}
+        height={450}
+        loading="lazy"
+        decoding="async"
+        class="blog-content-img"
+      />
+    </div>
+  </div>
+</SidenoteGroup>
+
+### Prefilling
+
+
+

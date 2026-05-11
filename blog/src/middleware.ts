@@ -6,7 +6,17 @@ import type { MiddlewareHandler } from 'astro';
  * Vite HMR client loads and blog edits never refresh. Rewrite dev asset URLs to the real
  * Astro origin (see `vite.server.origin` + `BLOG_DEV_PORT` in `astro.config.mjs`).
  */
-export const onRequest: MiddlewareHandler = async (_context, next) => {
+const LEGACY_SPARSE_SLUG = '/blog/building-sparse-attention-from-first-principles';
+const COMPRESSED_SLUG = '/blog/building-compressed-attention-from-first-principles';
+
+export const onRequest: MiddlewareHandler = async (context, next) => {
+  const path = context.url.pathname;
+  if (path === LEGACY_SPARSE_SLUG || path === `${LEGACY_SPARSE_SLUG}/`) {
+    const dest =
+      path.endsWith('/') ? `${COMPRESSED_SLUG}/` : COMPRESSED_SLUG;
+    return Response.redirect(new URL(dest, context.url), 308);
+  }
+
   const response = await next();
   const origin = __ASTRO_DEV_ASSET_ORIGIN__;
   if (!import.meta.env.DEV || !origin) {

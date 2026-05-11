@@ -99,7 +99,8 @@ Cards navigate straight to **arXiv / OpenReview / publisher URLs** (`href`), not
 | Astro config (site URL, output dir `dist/blog-site`) | [`blog/astro.config.mjs`](blog/astro.config.mjs) |
 | Content schema (frontmatter fields) | [`blog/src/content.config.ts`](blog/src/content.config.ts) |
 | Post bodies | [`blog/src/content/posts/*.mdx`](blog/src/content/posts/) |
-| Post HTML wrapper (title, date, favicon, nav back to site; images go in MDX) | [`blog/src/layouts/BlogPostLayout.astro`](blog/src/layouts/BlogPostLayout.astro) |
+| Post HTML wrapper (wide shell + reading column + `blog-prose--tufte` for margin notes) | [`blog/src/layouts/BlogPostLayout.astro`](blog/src/layouts/BlogPostLayout.astro) |
+| Margin / side notes (right rail on wide screens) | [`blog/src/components/SidenoteGroup.astro`](blog/src/components/SidenoteGroup.astro) + `.blog-sidenote-group` in [`blog/src/styles/blog.css`](blog/src/styles/blog.css) |
 | Blog-specific CSS | [`blog/src/styles/blog.css`](blog/src/styles/blog.css) |
 | JSON manifest for the Angular home page | Generated at **`/blog/posts.json`** from [`blog/src/pages/blog/posts.json.ts`](blog/src/pages/blog/posts.json.ts) |
 
@@ -111,7 +112,27 @@ Cards navigate straight to **arXiv / OpenReview / publisher URLs** (`href`), not
 4. Prefer **`$inline$`** and **`$$ display $$`** for math (MDX can choke on some `\(` `\)` forms).
 5. Run **`npm run build:site`** before deploy so the post and `posts.json` are merged into the Angular output.
 
-### Routing note
+#### Margin notes (numbered callout + growing right column)
+
+Post pages widen from **1100px** (`--blog-shell-max` ~1180px). Title, date, and body copy are **left-aligned** under **`--blog-read-width`**. Each **`SidenoteGroup`** is **full row width**: a capped main column plus a **sidenote column** `minmax(--blog-sidenote-rail-min, 1fr)` so notes use all free space to the right of the text. Below **720px** the note stacks; the block stays full width.
+
+```mdx
+import SidenoteGroup from '../../components/SidenoteGroup.astro';
+```
+
+```mdx
+<SidenoteGroup n={1}>
+  <div slot="note">
+    Longer explanation, math $x$, or [links](https://example.com) — same purple underline as the site.
+  </div>
+
+  Main paragraph, or wrap a whole `<div class="blog-algo-row">…</div>` so margin notes are not stuck inside a narrow figure cell.
+</SidenoteGroup>
+```
+
+Use **`n={2}`**, **`n={3}`**, … for more notes (unique per page). **`n="a"`** works for letter markers.
+
+You can use `<p slot="note">` instead of `<div slot="note">` for a single short note.
 
 Angular uses a catch‑all route that sends unknown paths to home. **Links to blog posts must be normal links**, e.g. `<a href="/blog/my-slug/">`, **not** `routerLink`, or the SPA will redirect to `/`.
 

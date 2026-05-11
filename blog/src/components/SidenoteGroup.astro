@@ -1,0 +1,28 @@
+---
+interface Props {
+  /** Shown as a superscript next to the main slot and as the lead numeral in the margin. Use unique values per post (1, 2, …). */
+  n: string | number;
+}
+
+const { n } = Astro.props;
+const marginId = `blog-margin-${String(n).replace(/[^a-zA-Z0-9-_]/g, '')}`;
+---
+
+<section class="blog-sidenote-group" aria-label={`Note ${n}`}>
+  <div class="blog-sidenote-group__main">
+    <div class="blog-sidenote-group__body">
+      <slot />
+    </div>
+    <sup class="blog-sidenote-ref">
+      <a href={`#${marginId}`}>{n}</a>
+    </sup>
+  </div>
+  <aside class="blog-sidenote-group__rail" id={marginId} role="note" tabindex="-1">
+    <div class="blog-sidenote-group__rail-inner">
+      <span class="blog-sidenote-num">{n}</span>
+      <div class="blog-sidenote-group__note-body">
+        <slot name="note" />
+      </div>
+    </div>
+  </aside>
+</section>

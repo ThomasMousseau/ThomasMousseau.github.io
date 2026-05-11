@@ -13,6 +13,10 @@ const devAssetOriginForDefine =
 export default defineConfig({
   site: 'https://thomasmousseau.github.io',
   outDir: '../dist/blog-site',
+  redirects: {
+    '/blog/building-sparse-attention-from-first-principles':
+      '/blog/building-compressed-attention-from-first-principles',
+  },
   server: {
     port: blogDevPort,
     strictPort: true,
@@ -36,6 +40,7 @@ export default defineConfig({
           'src/content.config.ts',
           'src/layouts/**/*.{astro,md,mdx}',
           'src/pages/**/*.{astro,md,mdx}',
+          'src/components/**/*.astro',
           'src/styles/**/*.{css,scss}',
         ],
         // Debounce so rapid Cmd+S does not overlap Astro content-store writes (rename
