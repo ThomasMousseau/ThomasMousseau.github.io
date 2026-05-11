@@ -4,11 +4,17 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "dev:blog": "npm run dev --prefix blog",
+    "dev:write": "node scripts/check-dev-write-ports.mjs && BLOG_DEV_PORT=4321 BLOG_DEV_SERVER=http://localhost:4321 concurrently -k -n blog,site -c magenta,cyan \"npm run dev --prefix blog\" \"ng serve --configuration with-blog --port 4200\"",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:website": "node dist/website/server/server.mjs",
-    "deploy": "ng build --configuration production --base-href='/' && npx angular-cli-ghpages --dir=dist/website/browser"
+    "build:blog": "npm run build --prefix blog",
+    "sync:blog-manifest": "npm run build --prefix blog && node scripts/sync-blog-manifest.mjs",
+    "copy:blog": "node scripts/copy-blog.mjs",
+    "build:site": "ng build --configuration production --base-href=/ && npm run build:blog && npm run copy:blog",
+    "deploy": "npm run build:site && npx angular-cli-ghpages --dir=dist/website/browser"
   },
   "private": true,
   "dependencies": {
@@ -23,6 +29,9 @@
     "@angular/router": "^19.2.0",
     "@angular/ssr": "^19.2.4",
     "express": "^4.18.2",
+    "katex": "^0.16.45",
+    "markdown-it": "^14.1.1",
+    "markdown-it-texmath": "^1.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -33,8 +42,10 @@
     "@angular/compiler-cli": "^19.2.0",
     "@types/express": "^4.17.17",
     "@types/jasmine": "~5.1.0",
+    "@types/markdown-it": "^14.1.2",
     "@types/node": "^18.18.0",
     "angular-cli-ghpages": "^2.0.3",
+    "concurrently": "^9.2.1",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

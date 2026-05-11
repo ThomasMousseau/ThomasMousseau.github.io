@@ -1,159 +1,208 @@
-:host {
-  display: block;
-  height: calc(100vh - 70px); /* Account for header height */
-  background-color: white;
-  color: black;
+.home {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: 0.75rem 1.25rem 2.5rem;
+  box-sizing: border-box;
+}
+
+.home__footnote {
+  margin-top: 2.5rem;
+  padding-top: 0.75rem;
+  text-align: center;
+}
+
+.home__footnote-text {
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  overflow: hidden; /* Prevent any scrolling */
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.55;
+  max-width: var(--max-content-width);
+  margin-inline: auto;
 }
 
-/* Ensure content is completely hidden until ready */
-.content-container {
-  opacity: 0;
-  transition: opacity 0.3s ease;
+/* Bio + photo: photo is absolutely positioned so row height = text only; photo never taller than bio. */
+.home__intro {
+  margin-bottom: 1.75rem;
+  text-align: left;
 }
 
-.content-container[style*="opacity: 1"] {
-  opacity: 1;
+.home__intro-wrap {
+  position: relative; /* establishes containing block for absolutely positioned photo */
+  padding-right: calc(clamp(7.5rem, 22vw, 12.5rem) + 1.25rem);
 }
 
-.home-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* Vertically center content */
-  align-items: center; /* Horizontally center content */
-  height: 100%; /* Use full height of parent */
-  text-align: center;
-  padding: 20px; /* Add some padding around the content */
-  box-sizing: border-box;
-  overflow: hidden; /* Prevent scrolling within container */
+.home__intro-text {
+  max-width: 100%;
 }
 
-.content-container h1 {
-  font-size: 3rem; /* Adjust size as preferred */
-  font-weight: 500; /* Slightly bolder than normal, but not too heavy */
-  color: black; /* Explicitly black */
-  margin: 0 0 20px 0; /* Adjusted space below the name for description */
+.home__intro-text p {
+  margin: 0 0 0.65rem;
+  font-size: 1.22rem;
+  color: var(--text);
+  line-height: 1.82;
 }
 
-.content-container .description {
-  font-size: 1.1rem;
-  color: #333; /* Slightly lighter than pure black for differentiation */
-  margin-bottom: 30px; /* Space between description and nav links */
+.home__intro-text p:last-child {
+  margin-bottom: 0;
 }
 
-.content-container nav {
-  display: flex; /* Enable flexbox for vertical alignment */
-  flex-direction: column; /* Stack links vertically */
-  align-items: center; /* Center links horizontally */
+.home__supervisor-link {
+  color: var(--text);
+  font-weight: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--link-underline);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
 }
 
-.home-container nav a {
-  color: black; /* Explicitly black */
-  text-decoration: none;
-  margin: 10px 0; /* Adjusted margin for vertical spacing */
-  font-size: 1.25rem; /* Adjust size as preferred */
-  padding: 8px 15px; /* Clickable area */
-  border-radius: 4px; /* Slightly rounded corners for a softer look, optional */
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* Smooth hover effect */
+.home__intro-photo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: clamp(7.5rem, 22vw, 12.5rem);
+  max-height: 100%;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  overflow: hidden;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  isolation: isolate;
 }
 
-.home-container nav a:hover,
-.home-container nav a:focus { /* Added focus for accessibility */
-  text-decoration: none; /* Keep no underline on hover for a cleaner look */
-  background-color: #f0f0f0; /* Subtle background on hover/focus */
-}
-
-/* If using Angular Router and want to style active links */
-.home-container nav a.active-link {
-  font-weight: bold;
-  /* background-color: #e0e0e0; */ /* Example active style, uncomment or modify if needed */
-}
-.home-container nav a:focus { /* Added focus for accessibility */
-  text-decoration: none; /* Keep no underline on hover for a cleaner look */
-  background-color: #f0f0f0; /* Subtle background on hover/focus */
-}
-
-/* If using Angular Router and want to style active links */
-.home-container nav a.active-link {
-  font-weight: bold;
-  /* background-color: #e0e0e0; */ /* Example active style, uncomment or modify if needed */
-}
-
-/* Typewriter effect styles */
-.typewriter {
-  position: relative;
-}
-
-.cursor {
-  display: inline-block;
-  color: black;
-  font-weight: normal;
-  animation: none;
-}
-
-.cursor.blink {
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-/* Fade in animation for navigation */
-.nav-container {
-  /* Pre-allocate space for navigation */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 180px; /* Approximate height needed for 3 nav links */
-}
-
-.nav-container a {
-  color: black;
-  text-decoration: none;
-  margin: 10px 0;
-  font-size: 1.25rem;
-  padding: 8px 15px;
-  border-radius: 4px;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-}
-
-.nav-container a:hover,
-.nav-container a:focus {
-  text-decoration: none;
-  background-color: #f0f0f0;
-}
-
-.nav-container a.active-link {
-  font-weight: bold;
-}
-
-/* Remove old fade-in class */
-.fade-in {
-  animation: fadeIn 0.8s ease-in;
-}
-
-@keyframes fadeIn {
-  from { 
-    opacity: 0; 
-    transform: translateY(20px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
-  }
-}
-
-/* Content Container */
-.content-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.home__intro-photo img {
+  display: block;
+  width: 100%;
   height: 100%;
-  text-align: center;
+  border: 0;
+  border-radius: inherit;
+  object-fit: cover;
+  object-position: center 62%;
+  transform: translateZ(0);
+}
+
+.home__blog {
+  padding-top: 0.25rem;
+}
+
+.home__section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  color: var(--text);
+}
+
+.home__hint {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.home__hint code {
+  font-size: 0.85em;
+  background: rgba(255, 255, 255, 0.45);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+.home__post-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.home__post {
+  border-top: 1px solid var(--border-subtle);
+  padding: 1.15rem 0;
+}
+
+.home__post:last-child {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.home__post-link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.home__post-link:hover .home__post-title {
+  text-decoration: underline;
+  text-decoration-color: var(--link-underline);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.12em;
+}
+
+.home__post-body {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.home__post-title {
+  margin: 0 0 0.2rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.home__post-meta {
+  margin: 0 0 0.4rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.home__post-desc {
+  margin: 0;
+  font-size: 0.98rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.home__post-thumb {
+  flex: 0 0 auto;
+  width: 132px;
+  max-width: 34vw;
+}
+
+.home__post-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+@media (max-width: 640px) {
+  .home__intro-wrap {
+    padding-right: 0;
+  }
+
+  .home__intro-photo {
+    position: static;
+    width: min(11rem, 55vw);
+    max-height: none;
+    margin: 1rem auto 0;
+    aspect-ratio: 1;
+  }
+
+  .home__intro-text {
+    text-align: left;
+  }
+}
+
+@media (max-width: 600px) {
+  .home__post-thumb {
+    width: 100%;
+    max-width: none;
+  }
+
+  .home__post-thumb img {
+    max-height: 180px;
+    object-fit: cover;
+  }
 }

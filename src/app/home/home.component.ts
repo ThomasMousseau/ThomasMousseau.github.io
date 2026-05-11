@@ -1,195 +1,69 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, PLATFORM_ID, Inject, AfterViewInit } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AnimationService } from '../services/animation.service';
-import { Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
+export interface BlogPostSummary {
+  slug: string;
+  title: string;
+  description: string;
+  date: string;
+  heroImage: string | null;
+}
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, CommonModule],
+  imports: [CommonModule],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrl: './home.component.css',
 })
-export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
-  displayedName = '';
-  displayedDescription = '';
-  displayedCv = '';
-  displayedAbout = '';
-  displayedPublications = '';
-  showNav = false;
-  showNameCursor = false;  // Start with false to prevent early showing
-  showDescCursor = false;
-  showCvCursor = false;
-  showAboutCursor = false;
-  showPublicationsCursor = false;
-  animationsEnabled = true;
-  private animationInProgress = false;
-  private animationSubscription: Subscription | null = null;
-  componentReady = false;  // Flag to prevent early template rendering
-  contentVisible = false;  // Additional flag for opacity control
-  private isBrowser: boolean;
-  
-  private readonly fullName = 'Thomas Mousseau';
-  private readonly fullDescription = 'Student Researcher | Software Engineer';
-  private readonly fullCv = 'CV';
-  private readonly fullAbout = 'About Me';
-  private readonly fullPublications = 'Publications';
-  private readonly typeSpeed = 100; // milliseconds per character
-  private readonly pauseBetweenLines = 500; // pause between name and description
-  private readonly pauseBeforeNav = 800; // pause before showing navigation
-  private readonly pauseBetweenNavItems = 300; // pause between navigation items
+export class HomeComponent implements OnInit {
+  /** Opening line of the bio. */
+  readonly bioOpening = 'Hi everyone, I am Thomas Mousseau ༼ つ ◕_◕ ༽つ';
 
-  constructor(private cdr: ChangeDetectorRef, private animationService: AnimationService, @Inject(PLATFORM_ID) private platformId: Object) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-  }
+  /** Remaining bio paragraphs (after the Mila / supervisor line). */
+  readonly bioClosingParagraphs = [
+    'I am interested in theoretical RL and large-scale ML systems.',
+  ];
 
-  ngOnInit() {
-    // Don't show anything on server
-    if (!this.isBrowser) {
+  readonly supervisorProfileUrl =
+    'https://mila.quebec/en/directory/amir-massoud-farahmand';
+
+  readonly profileImageSrc = '/assets/photos/new_profile_photo.jpg';
+
+  posts: BlogPostSummary[] = [];
+  postsLoadError = false;
+
+  constructor(
+    private readonly http: HttpClient,
+    @Inject(PLATFORM_ID) private readonly platformId: object,
+  ) {}
+
+  ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) {
       return;
     }
-
-    // Wait for next tick to ensure we're in browser
-    setTimeout(() => {
-      this.componentReady = true;
-      this.contentVisible = true;
-      
-      // Subscribe to animation changes from the service
-      this.animationSubscription = this.animationService.animationsEnabled$.subscribe(enabled => {
-        // Stop any ongoing animation immediately
-        this.animationInProgress = false;
-        
-        this.animationsEnabled = enabled;
-        this.resetState();
-        
-        if (this.animationsEnabled) {
-          this.startTypewriterEffect();
-        } else {
-          this.showAllContent();
-        }
-      });
-    }, 100); // Small delay to ensure browser is ready
+    this.http.get<BlogPostSummary[]>('/blog/posts.json').subscribe({
+      next: (data) => {
+        this.posts = Array.isArray(data) ? data : [];
+        this.postsLoadError = false;
+      },
+      error: () => {
+        this.posts = [];
+        this.postsLoadError = true;
+      },
+    });
   }
 
-  ngAfterViewInit() {
-    // Ensure hydration is complete before starting animations
-    if (this.isBrowser) {
-      this.cdr.detectChanges();
-    }
+  postUrl(slug: string): string {
+    return `/blog/${slug}/`;
   }
 
-  ngOnDestroy() {
-    if (this.animationSubscription) {
-      this.animationSubscription.unsubscribe();
-    }
-  }
-
-  private resetState() {
-    // Stop any ongoing animation first
-    this.animationInProgress = false;
-    
-    // Reset displayed text completely
-    this.displayedName = '';
-    this.displayedDescription = '';
-    this.displayedCv = '';
-    this.displayedAbout = '';
-    this.displayedPublications = '';
-    
-    // Reset navigation and cursors
-    this.showNav = false;
-    this.showNameCursor = false;  // Start with false to prevent early showing
-    this.showDescCursor = false;
-    this.showCvCursor = false;
-    this.showAboutCursor = false;
-    this.showPublicationsCursor = false;
-    
-    // Force change detection to ensure UI is updated
-    this.cdr.detectChanges();
-  }
-
-  private showAllContent() {
-    // Show all content immediately without animation
-    this.displayedName = this.fullName;
-    this.displayedDescription = this.fullDescription;
-    this.displayedCv = this.fullCv;
-    this.displayedAbout = this.fullAbout;
-    this.displayedPublications = this.fullPublications;
-    this.showNav = true;
-    this.showNameCursor = false;
-    this.showDescCursor = false;
-    this.showCvCursor = false;
-    this.showAboutCursor = false;
-    this.showPublicationsCursor = false;
-  }
-
-  private async startTypewriterEffect() {
-    // Double-check animations are still enabled before starting
-    if (!this.animationsEnabled) return;
-    
-    this.animationInProgress = true;
-    
-    // Type the name
-    this.showNameCursor = true;
-    await this.typeText(this.fullName, (char) => this.displayedName += char);
-    if (!this.animationInProgress || !this.animationsEnabled) return;
-    
-    // Hide name cursor
-    this.showNameCursor = false;
-    
-    // Pause between name and description
-    await this.delay(this.pauseBetweenLines);
-    if (!this.animationInProgress || !this.animationsEnabled) return;
-    
-    // Show description cursor and type the description
-    this.showDescCursor = true;
-    await this.typeText(this.fullDescription, (char) => this.displayedDescription += char);
-    if (!this.animationInProgress || !this.animationsEnabled) return;
-    
-    // Hide description cursor
-    this.showDescCursor = false;
-    
-    // Pause before showing navigation
-    await this.delay(this.pauseBeforeNav);
-    if (!this.animationInProgress || !this.animationsEnabled) return;
-    
-    // Show navigation container and start typing navigation items
-    this.showNav = true;
-    
-    // Type CV
-    this.showCvCursor = true;
-    await this.typeText(this.fullCv, (char) => this.displayedCv += char);
-    if (!this.animationInProgress || !this.animationsEnabled) return;
-    this.showCvCursor = false;
-    await this.delay(this.pauseBetweenNavItems);
-    if (!this.animationInProgress || !this.animationsEnabled) return;
-    
-    // Type About Me
-    this.showAboutCursor = true;
-    await this.typeText(this.fullAbout, (char) => this.displayedAbout += char);
-    if (!this.animationInProgress || !this.animationsEnabled) return;
-    this.showAboutCursor = false;
-    await this.delay(this.pauseBetweenNavItems);
-    if (!this.animationInProgress || !this.animationsEnabled) return;
-    
-    // Type Publications
-    this.showPublicationsCursor = true;
-    await this.typeText(this.fullPublications, (char) => this.displayedPublications += char);
-    if (!this.animationInProgress || !this.animationsEnabled) return;
-    this.showPublicationsCursor = false;
-    
-    this.animationInProgress = false;
-  }
-
-  private async typeText(text: string, callback: (char: string) => void): Promise<void> {
-    for (let i = 0; i < text.length; i++) {
-      if (!this.animationInProgress || !this.animationsEnabled) return;
-      callback(text[i]);
-      await this.delay(this.typeSpeed);
-    }
-  }
-
-  private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  formatDate(iso: string): string {
+    const d = new Date(iso);
+    return d.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+    });
   }
 }

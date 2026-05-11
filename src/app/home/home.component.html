@@ -1,13 +1,68 @@
-<div class="home-container">
-  <!-- Main Content -->
-  <div class="content-container" *ngIf="componentReady" [style.opacity]="contentVisible ? 1 : 0">
-    <h1 class="typewriter">{{ displayedName }}<span class="cursor" [class.blink]="showNameCursor" *ngIf="showNameCursor">|</span></h1>
-    <p class="description typewriter">{{ displayedDescription }}<span class="cursor" [class.blink]="showDescCursor" *ngIf="showDescCursor">|</span></p>
-    <!-- Navigation container - only show individual links when they have content -->
-    <nav class="nav-container">
-      <a *ngIf="displayedCv" routerLink="/cv" routerLinkActive="active-link" class="typewriter">{{ displayedCv }}<span class="cursor" [class.blink]="showCvCursor" *ngIf="showCvCursor">|</span></a>
-      <a *ngIf="displayedAbout" routerLink="/about" routerLinkActive="active-link" class="typewriter">{{ displayedAbout }}<span class="cursor" [class.blink]="showAboutCursor" *ngIf="showAboutCursor">|</span></a>
-      <a *ngIf="displayedPublications" routerLink="/publications" routerLinkActive="active-link" class="typewriter">{{ displayedPublications }}<span class="cursor" [class.blink]="showPublicationsCursor" *ngIf="showPublicationsCursor">|</span></a>
-    </nav>
-  </div>
-</div>
+<main class="home">
+  <section class="home__intro" aria-label="Introduction">
+    <div class="home__intro-wrap">
+      <div class="home__intro-text">
+        <p>{{ bioOpening }}</p>
+        <p>
+          I am a Master's student at Mila where I am working on
+          reinforcement learning (RL) under the supervision of
+          <a
+            class="home__supervisor-link"
+            [href]="supervisorProfileUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Prof. Amir-massoud Farahmand</a>.
+        </p>
+        @for (line of bioClosingParagraphs; track line) {
+          <p>{{ line }}</p>
+        }
+      </div>
+      <div class="home__intro-photo">
+        <img
+          [src]="profileImageSrc"
+          width="200"
+          height="200"
+          alt="Thomas Mousseau"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="home__blog" aria-labelledby="technical-blog-heading">
+    <h2 id="technical-blog-heading" class="home__section-title">Technical blog</h2>
+
+    @if (postsLoadError) {
+      <p class="home__hint">
+        Blog listing could not be loaded. After adding posts, run a full site build so
+        <code>/blog/posts.json</code> exists, or open the site from the production bundle.
+      </p>
+    }
+
+    <ul class="home__post-list">
+      @for (post of posts; track post.slug) {
+        <li class="home__post">
+          <a class="home__post-link" [href]="postUrl(post.slug)">
+            <div class="home__post-body">
+              <h3 class="home__post-title">{{ post.title }}</h3>
+              <p class="home__post-meta">{{ formatDate(post.date) }}</p>
+              <p class="home__post-desc">{{ post.description }}</p>
+            </div>
+            @if (post.heroImage) {
+              <div class="home__post-thumb">
+                <img [src]="post.heroImage" alt="" loading="lazy" />
+              </div>
+            }
+          </a>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <footer class="home__footnote" role="contentinfo">
+    <p class="home__footnote-text">
+      The technical blog format took a lot of inspiration from
+      <a href="https://henryhmko.github.io/" target="_blank" rel="noopener noreferrer">Henry Ko’s blog</a>.
+    </p>
+  </footer>
+</main>

@@ -10,6 +10,8 @@ src/assets/prompt.txt
 
 # Node
 /node_modules
+/blog/node_modules
+/blog/.astro
 npm-debug.log
 yarn-error.log
 

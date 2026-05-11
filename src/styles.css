@@ -1,13 +1,63 @@
-/* You can add global styles to this file, and also import other style files */
-
-/* Global font family for entire website */
-* {
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+/* Site-wide typography (Henry Ko–style body font). Code stays monospace. */
+@font-face {
+  font-family: 'NIXGONM-Vb';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/NIXGONM-Vb.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
-html, body {
+:root {
+  --page-bg: #edede9;
+  --text: #1a1a1a;
+  --muted: #3d3d3d;
+  /* Hyperlinks: body color + underline in this purple (change here sitewide). */
+  --link-underline: #a855f7;
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --max-content-width: 900px;
+}
+
+html,
+body {
   margin: 0;
   padding: 0;
-  height: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: 'NIXGONM-Vb', system-ui, sans-serif;
+  background: var(--page-bg);
+  color: var(--text);
+  line-height: 1.65;
   overflow-x: hidden;
+}
+
+/* Default for external / in-content links (header & card links override locally). */
+a[href] {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--link-underline);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    'Liberation Mono',
+    'Courier New',
+    monospace;
+}
+
+/* KaTeX (publications) inherits body font context */
+.katex {
+  font-size: 1.05em;
 }
