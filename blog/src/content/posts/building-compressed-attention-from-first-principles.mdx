@@ -7,7 +7,6 @@ heroImage: /blog/images/placeholder.svg
 ---
 
 import attentionDiagramSrc from './attention-score.svg?url';
-import SidenoteGroup from '../../components/SidenoteGroup.astro';
 
 In development...
 
@@ -45,14 +44,16 @@ In development...
 
 ---
 
-<SidenoteGroup n={1}>
+<BlogAlgoSidenote
+  n={1}
+  imageSrc={attentionDiagramSrc}
+  imageAlt="Attention score diagram"
+>
   <div slot="note">
-    This figure is a schematic of an <strong>attention score matrix</strong>: each cell shows how
-    strongly one query position attends to one key position, before softmax turns those scores into
-    weights.
+    This is an example of an <strong>attention score matrix</strong> for a single head. Each cell shows how
+    strongly one query position attends to one key position after the softmax operation.
   </div>
-  <div class="blog-algo-row">
-    <div class="blog-algo-row__math">
+  <div slot="math">
 $$
 \begin{array}{l}
 \textbf{Vanilla Attention (Single Head)} \\[4pt]
@@ -66,20 +67,8 @@ $$
 \end{array}
 \end{array}
 $$
-    </div>
-    <div class="blog-algo-row__figure">
-      <img
-        src={attentionDiagramSrc}
-        alt="Attention score diagram"
-        width={800}
-        height={450}
-        loading="lazy"
-        decoding="async"
-        class="blog-content-img"
-      />
-    </div>
   </div>
-</SidenoteGroup>
+</BlogAlgoSidenote>
 
 ### Prefilling
 

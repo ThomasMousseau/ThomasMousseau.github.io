@@ -1,6 +1,14 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
+import BlogAlgoSidenote from '../../components/BlogAlgoSidenote.astro';
+import SidenoteGroup from '../../components/SidenoteGroup.astro';
+
+/** Injected into every post MDX so files avoid repeating the same imports. */
+const mdxComponents = {
+  SidenoteGroup,
+  BlogAlgoSidenote,
+} as const;
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -16,5 +24,5 @@ const { title, date, description } = post.data;
 ---
 
 <BlogPostLayout title={title} date={date} description={description}>
-  <Content />
+  <Content components={mdxComponents} />
 </BlogPostLayout>

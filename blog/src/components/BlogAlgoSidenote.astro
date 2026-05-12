@@ -1,0 +1,35 @@
+---
+import SidenoteGroup from './SidenoteGroup.astro';
+
+interface Props {
+  n: string | number;
+  imageSrc: string;
+  imageAlt: string;
+  width?: number;
+  height?: number;
+}
+
+const { n, imageSrc, imageAlt, width = 800, height = 450 } = Astro.props;
+---
+
+<SidenoteGroup n={n}>
+  <div slot="note">
+    <slot name="note" />
+  </div>
+  <div class="blog-algo-row">
+    <div class="blog-algo-row__math">
+      <slot name="math" />
+    </div>
+    <div class="blog-algo-row__figure">
+      <img
+        src={imageSrc}
+        alt={imageAlt}
+        width={width}
+        height={height}
+        loading="lazy"
+        decoding="async"
+        class="blog-content-img"
+      />
+    </div>
+  </div>
+</SidenoteGroup>

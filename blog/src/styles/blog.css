@@ -362,16 +362,7 @@
 .blog-sidenote-group .blog-algo-row__math {
   flex: 1 1 0;
   min-width: 0;
-}
-
-.blog-sidenote-group .blog-algo-row__figure {
-  flex: 0 0 auto;
-  width: auto;
-  max-width: min(400px, 42vw);
-}
-
-.blog-sidenote-group .blog-algo-row__figure .blog-content-img {
-  max-width: min(400px, 100%);
+  text-align: left;
 }
 
 /* Display math in sidenote algorithm: no horizontal scroll strip; scale to fit */
@@ -379,15 +370,24 @@
   overflow-x: visible;
   overflow-y: visible;
   max-width: 100%;
+  text-align: left;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.blog-sidenote-group .blog-algo-row__math .katex-display > .katex {
+  margin-left: 0;
+  margin-right: auto;
+  text-align: left;
 }
 
 .blog-sidenote-group .blog-algo-row__math .katex-display .katex {
-  font-size: 1.04em;
+  font-size: 1.14em;
 }
 
 @media (max-width: 960px) {
   .blog-sidenote-group .blog-algo-row__math .katex-display .katex {
-    font-size: 0.94em;
+    font-size: 1.02em;
   }
 }
 
