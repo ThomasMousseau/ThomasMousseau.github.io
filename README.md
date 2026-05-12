@@ -59,6 +59,8 @@ The Astro project builds into `dist/blog-site/`; **`npm run copy:blog`** (via `b
 
 The home page loads **`/blog/posts.json`**. Plain `npm start` serves the copy under `public/blog/posts.json` when present. For the **live** manifest from Astro while the blog dev server runs, use **`npm run dev:write`** so `/blog/posts.json` is proxied to Astro.
 
+Blog post thumbnails and figures use URLs like **`/blog/images/…`**. Those files live only under **`blog/public/blog/images/`** (built into `dist/blog-site` and merged on `build:site`). **Do not** copy blog images into the Angular root **`public/blog/images/`**—that duplicate is easy to confuse with the real asset and `ng serve` will serve the stale file. With **`npm run dev:write`**, `/blog/images/…` is proxied to the Astro dev server like `posts.json`.
+
 Minimum workflow to preview a **static** production bundle locally:
 
 ```bash
@@ -108,7 +110,7 @@ Cards navigate straight to **arXiv / OpenReview / publisher URLs** (`href`), not
 
 1. Add `your-post.mdx` under `blog/src/content/posts/`.
 2. Frontmatter (required fields match the schema): `title`, `description`, `date`, `slug`, optional `heroImage` (thumbnail on the **home** post list only; not shown at the top of the post page).
-3. Put images in `blog/public/` (site paths like `/blog/images/foo.png`).
+3. Put blog images only in **`blog/public/`** (URLs like `/blog/images/foo.png`). Do not add the same files under the repo root **`public/blog/images/`**.
 4. Prefer **`$inline$`** and **`$$ display $$`** for math (MDX can choke on some `\(` `\)` forms).
 5. Run **`npm run build:site`** before deploy so the post and `posts.json` are merged into the Angular output.
 

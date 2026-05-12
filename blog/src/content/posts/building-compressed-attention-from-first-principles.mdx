@@ -3,10 +3,8 @@ title: 'Building Compressed Attention from First Principles'
 description: "Building intuition until we reach DeepSeek's compressed attention stack."
 date: 2026-05-11
 slug: building-compressed-attention-from-first-principles
-heroImage: /blog/images/placeholder.svg
+heroImage: /blog/images/attention-score.svg
 ---
-
-import attentionDiagramSrc from './attention-score.svg?url';
 
 In development...
 
@@ -15,12 +13,10 @@ In development...
 - [1. Vanilla Attention](#1-vanilla-attention)
   - [Prefilling](#prefilling)
   - [Decoding](#decoding)
-- [2. The Quadratic Bottleneck](#2-the-quadratic-bottleneck)
-- [3. KV Caching and the Hardware Reality](#3-kv-caching-and-the-hardware-reality)
-  - [The Roofline Model](#the-roofline-model)
-  - [The Memory Bandwidth Wall](#the-memory-bandwidth-wall)
+- [2. The Roofline Model](#2-the-roofline-model)
+- [3. The Quadratic Bottleneck](#3-the-quadratic-bottleneck)
 - [4. Alternative Architectures: Mamba and Nemotron](#4-alternative-architectures-mamba-and-nemotron)
-- [5. DeepSeek V4: Extreme KV Compression](#5-deepseek-v4-extreme-kv-compression)
+- [5. DeepSeek V4 Extreme KV Compression](#5-deepseek-v4-extreme-kv-compression)
   - [Compressed Sparse Attention (CSA)](#compressed-sparse-attention-csa)
   - [Heavily Compressed Attention (HCA)](#heavily-compressed-attention-hca)
 - [6. Conclusion](#6-conclusion)
@@ -28,16 +24,18 @@ In development...
 
 ## 1. Vanilla Attention
 
+### Prefilling
+
 
 | Category &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Symbol &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Shape &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description |
 | :--- | :--- | :--- | :--- |
-| **Parameters** | $W_Q, W_K$ | $d_{\text{em}} \times d_k$ | Query and Key projection weights |
+| Parameters | $W_Q, W_K$ | $d_{\text{em}} \times d_k$ | Query and Key projection weights |
 | | $W_V$ | $d_{\text{em}} \times d_v$ | Value projection weights |
 | | $W_O$ | $d_v \times d_{\text{em}}$ | Output projection weights |
-| **Projections** | $X$ | $\text{seq} \times d_{\text{em}}$ | Input token embeddings |
+| Projections | $X$ | $\text{seq} \times d_{\text{em}}$ | Input token embeddings |
 | | $Q, K$ | $\text{seq} \times d_k$ | Projected queries and keys |
 | | $V$ | $\text{seq} \times d_v$ | Projected values |
-| **Intermediates** | $A$ | $\text{seq} \times \text{seq}$ | Attention scores |
+| Intermediates | $A$ | $\text{seq} \times \text{seq}$ | Attention scores |
 | | $O$ | $\text{seq} \times d_v$ | Weighted value aggregation |
 | | $\Delta X$ | $\text{seq} \times d_{\text{em}}$ | Attention update projected back to embedding space |
 | | $X_{\text{attn}}$ | $\text{seq} \times d_{\text{em}}$ | Attention output after residual addition |
@@ -46,11 +44,11 @@ In development...
 
 <BlogAlgoSidenote
   n={1}
-  imageSrc={attentionDiagramSrc}
+  imageSrc="/blog/images/attention-score.svg"
   imageAlt="Attention score diagram"
 >
   <div slot="note">
-    This is an example of an <strong>attention score matrix</strong> for a single head. Each cell shows how
+    This is an example of an <strong>attention score matrix</strong>. Each cell shows how
     strongly one query position attends to one key position after the softmax operation.
   </div>
   <div slot="math">
@@ -70,7 +68,63 @@ $$
   </div>
 </BlogAlgoSidenote>
 
-### Prefilling
+### Decoding
+
+<div style={{ display: "flex", gap: "3rem", alignItems: "flex-start" }}>
+<div style={{ flex: 1 }}>
+
+**Prefill**
+
+$$
+O = \text{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right) V
+$$
+
+</div>
+<div style={{ flex: 1 }}>
+
+**Decode**
+
+$$
+o_t = \sum_{j=0}^{t} \text{softmax}\!\left(\frac{q_t \cdot k_j}{\sqrt{d_k}}\right) v_j
+$$
+
+</div>
+</div>
 
 
+At inference time, only the last token's query $q_t$ is needed, not the full $Q$ matrix. The model is solely trying to produce $o_t$, the attention output for the most recently generated token, which is then passed through the remaining layers to predict the next token. Since a new token is generated at each step, both $q_t$ and $o_t$ change at every iteration.
+
+The key observation is that this is not the case for most of $K$ and $V$. The vectors $k_1, \dots, k_{t-1}$ and $v_1, \dots, v_{t-1}$ are fixed, they depend only on tokens that have already been generated and will not change when a new token is appended. Rather than recomputing and reloading the entire $K$ and $V$ matrices at each step, we can keep them resident in HBM, compute only the new projections $k_t$ and $v_t$ for the newly generated token, and append them to their stored matrix.
+
+This is **KV caching**. It eliminates the redundant recomputation of $K$ and $V$ across decoding steps and critically reduces the memory transfers that would otherwise dominate inference latency. This saving becomes increasingly significant as context windows grow longer, which is now a central requirement for modern agentic workloads.
+
+## 2. The Roofline Model
+
+Consider the matrix multiplication $Z = X \cdot Y$, with $X \in \mathbb{R}^{A \times B}$ and $Y \in \mathbb{R}^{B \times C}$, so $Z \in \mathbb{R}^{A \times C}$.
+
+Arithmetic intensity is defined as:
+
+$$
+I = \frac{\text{FLOPs}}{\text{Bytes moved}}
+$$
+
+Each entry of $Z$ requires $B$ multiplications and $B-1$ additions, giving $2B - 1 \approx 2B$ operations. Across all $AC$ output entries:
+
+$$
+\text{FLOPs} = (2B - 1) \cdot AC \approx 2ABC
+$$
+
+In BF16, each element occupies 2 bytes. The total memory traffic for reading $X$, $Y$ and writing $Z$ is:
+
+$$
+\text{Bytes} = 2(AB + BC + AC)
+$$
+
+The arithmetic intensity is therefore:
+
+$$
+I_{\text{matmul}} = \frac{2ABC}{2(AB + BC + AC)} = \frac{ABC}{AB + BC + AC}
+$$
+
+[IMAGE PLACEHOLDER — roofline diagram: compute-bound vs memory-bound regions]
 
