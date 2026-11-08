@@ -1,28 +1,45 @@
 <main class="pub-page">
   <h1 class="pub-page__title">Publications</h1>
   <p class="pub-page__lead">
-    Each entry links to the paper on arXiv, OpenReview, or the publisher site.
   </p>
 
   <ul class="pub-list">
     @for (pub of publications; track pub.href + pub.titleMd) {
       <li class="pub-card-wrap">
-        <a
-          class="pub-card"
-          [href]="pub.href"
-          [attr.target]="linkTarget(pub)"
-          [attr.rel]="linkRel(pub)"
-        >
+        <div class="pub-card">
           <div class="pub-card__body">
-            <div class="pub-card__title" [innerHTML]="pub.titleMd | richHtml"></div>
-            <p class="pub-card__venue">{{ venueLabel(pub) }}</p>
-            <div class="pub-card__abstract" [innerHTML]="pub.abstractMd | richHtml"></div>
-            <span class="pub-card__cta">View paper</span>
+            <a
+              class="pub-card__title-link"
+              [href]="pub.href"
+              [attr.target]="linkTarget(pub)"
+              [attr.rel]="linkRel(pub)"
+              (click)="onTitleClick($event, pub)"
+            >
+              <span class="pub-card__title" [innerHTML]="pub.titleMd | richHtml"></span>
+            </a>
+            @if (pub.authorsMd) {
+              <div class="pub-card__authors" [innerHTML]="pub.authorsMd | richHtml"></div>
+            }
+            <p class="pub-card__venue">
+              @if (pub.venueHref) {
+                <a [href]="pub.venueHref" target="_blank" rel="noopener noreferrer">
+                  <strong>{{ venueLabel(pub) }}</strong>
+                </a>
+              } @else {
+                {{ venueLabel(pub) }}
+              }
+            </p>
+            @if (statusNote(pub)) {
+              <p class="pub-card__status">{{ statusNote(pub) }}</p>
+            }
+            @if (pub.abstractMd) {
+              <div class="pub-card__abstract" [innerHTML]="pub.abstractMd | richHtml"></div>
+            }
           </div>
           <div class="pub-card__thumb" aria-hidden="true">
             <img [src]="thumbSrc(pub)" alt="" loading="lazy" />
           </div>
-        </a>
+        </div>
       </li>
     }
   </ul>

@@ -14,6 +14,7 @@
   --muted: #3d3d3d;
   /* Hyperlinks: body color + underline in this purple (change here sitewide). */
   --link-underline: #a855f7;
+  --selection-bg: rgba(168, 85, 247, 0.35);
   --border-subtle: rgba(0, 0, 0, 0.08);
   --max-content-width: 900px;
 }
@@ -31,6 +32,16 @@ body {
   color: var(--text);
   line-height: 1.65;
   overflow-x: hidden;
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--text);
+}
+
+::-moz-selection {
+  background: var(--selection-bg);
+  color: var(--text);
 }
 
 /* Default for external / in-content links (header & card links override locally). */

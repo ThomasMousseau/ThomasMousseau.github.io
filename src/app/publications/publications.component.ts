@@ -5,13 +5,19 @@ import { RichHtmlPipe } from '../pipes/rich-html.pipe';
 export interface PublicationItem {
   /** Markdown + `$math$` supported */
   titleMd: string;
+  /** Optional author line (Markdown supported) */
+  authorsMd?: string;
   abstractMd: string;
   /** Optional thumbnail; defaults to the same placeholder as the technical blog */
   imageUrl?: string;
-  /** External paper link (arXiv, OpenReview, etc.) */
+  /** Paper link (local PDF, arXiv, OpenReview, etc.) */
   href: string;
   /** Conference / journal; omit or leave empty while not published → shown as “Preprint” */
   venue?: string;
+  /** Optional conference / journal page */
+  venueHref?: string;
+  /** Optional note under the venue (e.g. paper not yet available) */
+  statusNote?: string;
 }
 
 @Component({
@@ -25,19 +31,35 @@ export class PublicationsComponent {
   readonly placeholderThumb = '/blog/images/placeholder.svg';
 
   /**
-   * Add one object per paper. Entire card opens `href` in a new tab.
+   * Add one object per paper. Title links to `href` (use `#` until a paper URL exists).
    */
   readonly publications: PublicationItem[] = [
     {
-      titleMd: '$\\varphi\\text{TD}$',
-      abstractMd: 'Abstract coming soon …',
-      href: '#',
+      titleMd:
+        '$\\varphi\\text{TD}$: Distributional Reinforcement Learning using Characteristic Functions',
+      authorsMd:
+        '**Thomas Mousseau**, Tyler Kastner, Davide Baldelli, Amir-massoud Farahmand',
+      abstractMd: '',
+      imageUrl: '/assets/publications/phitd_cover.png',
+      venue: 'Neurips 2026',
+      venueHref: 'https://neurips.cc/virtual/2026/loc/paris/poster/154745',
+      href: '/publications/phitd.pdf',
     },
   ];
 
   venueLabel(pub: PublicationItem): string {
     const v = pub.venue?.trim();
     return v ? v : 'Preprint';
+  }
+
+  statusNote(pub: PublicationItem): string {
+    return pub.statusNote?.trim() ?? '';
+  }
+
+  onTitleClick(event: MouseEvent, pub: PublicationItem): void {
+    if (pub.href.trim() === '#') {
+      event.preventDefault();
+    }
   }
 
   thumbSrc(pub: PublicationItem): string {

@@ -20,6 +20,7 @@
   --blog-sidenote-rail-min: min(8.75rem, 32vw);
   /* Match Angular `src/styles.css` + header nav */
   --link-underline: #a855f7;
+  --selection-bg: rgba(168, 85, 247, 0.35);
   --border-subtle: rgba(0, 0, 0, 0.08);
   /* NIXGONM ships one weight; real bold needs a face with multiple weights — use system UI for headings */
   --blog-heading-font:
@@ -39,6 +40,16 @@
   background: var(--page-bg);
   color: var(--text);
   line-height: 1.65;
+}
+
+.blog-body ::selection {
+  background: var(--selection-bg);
+  color: var(--text);
+}
+
+.blog-body ::-moz-selection {
+  background: var(--selection-bg);
+  color: var(--text);
 }
 
 .blog-header {

@@ -13,13 +13,13 @@ In development...
 - [1. Vanilla Attention](#1-vanilla-attention)
   - [Prefilling](#prefilling)
   - [Decoding](#decoding)
-- [2. The Roofline Model](#2-the-roofline-model)
-- [3. The Quadratic Bottleneck](#3-the-quadratic-bottleneck)
-- [4. Alternative Architectures: Mamba and Nemotron](#4-alternative-architectures-mamba-and-nemotron)
-- [5. DeepSeek V4 Extreme KV Compression](#5-deepseek-v4-extreme-kv-compression)
+- [2. Arithmetic Intensity and Bottlenecks](#2-arithmetic-intensity-and-bottlenecks)
+  - [Attention Projection](#attention-projection)
+- [3. Alternative Architectures: Mamba and Nemotron](#3-alternative-architectures-mamba-and-nemotron)
+- [4. DeepSeek V4 Extreme KV Compression](#4-deepseek-v4-extreme-kv-compression)
   - [Compressed Sparse Attention (CSA)](#compressed-sparse-attention-csa)
   - [Heavily Compressed Attention (HCA)](#heavily-compressed-attention-hca)
-- [6. Conclusion](#6-conclusion)
+- [5. Conclusion](#5-conclusion)
 
 
 ## 1. Vanilla Attention
@@ -98,7 +98,7 @@ The key observation is that this is not the case for most of $K$ and $V$. The ve
 
 This is **KV caching**. It eliminates the redundant recomputation of $K$ and $V$ across decoding steps and critically reduces the memory transfers that would otherwise dominate inference latency. This saving becomes increasingly significant as context windows grow longer, which is now a central requirement for modern agentic workloads.
 
-## 2. The Roofline Model
+## 2. Arithmetic Intensity and Bottlenecks
 
 Consider the matrix multiplication $Z = X \cdot Y$, with $X \in \mathbb{R}^{A \times B}$ and $Y \in \mathbb{R}^{B \times C}$, so $Z \in \mathbb{R}^{A \times C}$.
 
@@ -108,13 +108,13 @@ $$
 I = \frac{\text{FLOPs}}{\text{Bytes moved}}
 $$
 
-Each entry of $Z$ requires $B$ multiplications and $B-1$ additions, giving $2B - 1 \approx 2B$ operations. Across all $AC$ output entries:
+Each entry of $Z$ requires $B$ multiplications and $B-1$ additions, giving $2B - 1$ operations. Across all $AC$ output entries:
 
 $$
-\text{FLOPs} = (2B - 1) \cdot AC \approx 2ABC
+\text{FLOPs} = (2B - 1) \cdot AC = 2ABC - AC
 $$
 
-In BF16, each element occupies 2 bytes. The total memory traffic for reading $X$, $Y$ and writing $Z$ is:
+In **BF16**, each element occupies 2 bytes. The total memory traffic for reading $X$, $Y$ and writing $Z$ is:
 
 $$
 \text{Bytes} = 2(AB + BC + AC)
@@ -123,8 +123,41 @@ $$
 The arithmetic intensity is therefore:
 
 $$
-I_{\text{matmul}} = \frac{2ABC}{2(AB + BC + AC)} = \frac{ABC}{AB + BC + AC}
+I_{\text{matmul}} = \frac{2ABC - AC}{2(AB + BC + AC)} = \frac{ABC}{AB + BC + AC} - \frac{AC}{2(AB + BC + AC)}
 $$
 
-[IMAGE PLACEHOLDER — roofline diagram: compute-bound vs memory-bound regions]
+In practice, we will often have terms much bigger then  and thus will consequentialy dominate the final result. This is why practionners often use the simplified formula depending on the problem at hand.
+
+### Attention Projection
+
+For example, with transformers, during autoregressive generation (inference) or when processing very small context windows, the effective number of tokens processed concurrently is much smaller than the hidden dimensions of the model.
+
+Let us define the number of tokens as $N = b \times seq$ (where $b$ is the batch size and $seq$ is the sequence length). In the attention mechanism, to compute the Queries, we perform the linear projection $Q = X W_Q$.
+
+Here, the input $X \in \mathbb{R}^{N \times d_{\text{em}}}$ is multiplied by the weight matrix $W_Q \in \mathbb{R}^{d_{\text{em}} \times d_k}$. Mapping this to our matrix multiplication dimensions, we have:
+
+* **$A = N$** (the token dimension)
+* **$B = seq$** (the sequence length)
+* **$C = d_k$** (the projection dimension)
+
+
+$$
+I_{\text{exact}} = \frac{N d_{\text{em}} d_k}{N d_{\text{em}} + d_{\text{em}} d_k + N d_k} - \frac{N d_k}{2(N d_{\text{em}} + d_{\text{em}} d_k + N d_k)}
+$$
+
+$$
+I_{\text{approx}} \approx \frac{N d_{\text{em}} d_k}{N d_{\text{em}} + d_{\text{em}} d_k + N d_k}
+$$
+
+Because the embedding and projection dimensions ($d_{\text{em}}$ and $d_k$) are typically much larger than the batch $\times$ sequence dimension $N$ (e.g., $d_{\text{em}} = 4096$ while $N = 1$ during single-batch decoding), the weight matrix size $d_{\text{em}} d_k$ strictly dominates the memory traffic footprint in the denominator. Mathematically, $B C \gg A B$ and $B C \gg A C$. 
+
+Thus, the denominator can be approximated simply as $B C$, reducing the formula to:
+
+$$
+I \approx \frac{A (B C)}{B C} = A = N
+$$
+
+This elegantly demonstrates why transformer inference is notoriously memory bound. The arithmetic intensity of generating $Q$, $K$, and $V$ is effectively bounded by $N$. If you are generating a single token at a time ($N=1$), your arithmetic intensity sits at approximately $1$ FLOP/Byte. Because modern accelerators feature machine balances (Peak FLOPs / Peak Bandwidth) heavily skewed towards compute, often requiring $>100$ FLOPs/Byte to reach the peak compute roof, this operation will inevitably hit the memory wall. 
+
+
 
