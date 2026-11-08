@@ -8,6 +8,16 @@
   font-display: swap;
 }
 
+/* Same Nixgon family, bold cut. Kept as its own face so font-weight: 700 elsewhere does not switch every semibold label. */
+@font-face {
+  font-family: 'NIXGONB-Vb';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/NIXGONB-Vb.woff')
+    format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --page-bg: #edede9;
   --text: #1a1a1a;

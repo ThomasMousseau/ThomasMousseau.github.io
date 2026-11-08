@@ -136,27 +136,36 @@
 
 .pub-card__thumb {
   flex: 0 0 auto;
+  align-self: stretch;
+  position: relative;
   width: 198px;
   max-width: 51vw;
+  overflow: hidden;
+  border-radius: 6px;
 }
 
 .pub-card__thumb img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  height: auto;
-  border-radius: 6px;
-  object-fit: contain;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+  object-position: center 58%;
   background: #fff;
 }
 
 @media (max-width: 600px) {
   .pub-card__thumb {
+    align-self: auto;
     width: 100%;
     max-width: none;
+    /* Same proportions as the previous φTD figure once the photo sits under the text. */
+    aspect-ratio: 5873 / 4494;
   }
 
   .pub-card__thumb img {
-    max-height: 270px;
-    object-fit: contain;
+    position: static;
   }
 }

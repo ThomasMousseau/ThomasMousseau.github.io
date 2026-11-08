@@ -40,7 +40,7 @@ export class PublicationsComponent {
       authorsMd:
         '**Thomas Mousseau**, Tyler Kastner, Davide Baldelli, Amir-massoud Farahmand',
       abstractMd: '',
-      imageUrl: '/assets/publications/phitd_cover.png',
+      imageUrl: '/assets/publications/phitd_cover.jpg',
       venue: 'Neurips 2026',
       venueHref: 'https://neurips.cc/virtual/2026/loc/paris/poster/154745',
       href: '/publications/phitd.pdf',

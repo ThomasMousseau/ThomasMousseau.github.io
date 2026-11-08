@@ -86,8 +86,9 @@
 }
 
 .home__section-title {
+  font-family: 'NIXGONB-Vb', 'NIXGONM-Vb', system-ui, sans-serif;
   font-size: 1.3rem;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0 0 1rem;
   color: var(--text);
 }
