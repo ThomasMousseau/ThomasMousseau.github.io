@@ -1,0 +1,43 @@
+<article class="story">
+  <p class="story__back">
+    <a routerLink="/publications">Publications</a>
+  </p>
+
+  <header class="story__hero">
+    <p class="story__kicker" [innerHTML]="mark"></p>
+    <h1>Distributional Reinforcement Learning using Characteristic Functions</h1>
+    <p class="story__authors">
+      Thomas Mousseau, Tyler Kastner, Davide Baldelli, Amir-massoud Farahmand
+    </p>
+    <p class="story__meta">
+      <a [href]="venueUrl" target="_blank" rel="noopener noreferrer">NeurIPS 2026</a>
+      <a [href]="paperUrl" target="_blank" rel="noopener noreferrer">arXiv</a>
+      <a [href]="codeUrl" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </p>
+    <nav class="story__chapters" aria-label="Story sections">
+      @for (chapter of chapters; track chapter) {
+        <a [routerLink]="[]" [fragment]="chapterId(chapter)">{{ chapter }}</a>
+      }
+    </nav>
+  </header>
+
+  @for (beat of beats; track beat.src; let i = $index) {
+    <section class="story__beat" [attr.id]="showChapter(i) ? chapterId(beat.chapter) : null">
+      @if (showChapter(i)) {
+        <h2>{{ beat.chapter }}</h2>
+      }
+      @if (beat.line) {
+        <p class="story__line">{{ beat.line }}</p>
+      }
+      <img [src]="beat.src" [alt]="beat.alt" width="1920" height="1080" [loading]="i === 0 ? 'eager' : 'lazy'" />
+    </section>
+  }
+
+  <footer class="story__end">
+    <p class="story__meta">
+      <a [href]="venueUrl" target="_blank" rel="noopener noreferrer">NeurIPS 2026</a>
+      <a [href]="paperUrl" target="_blank" rel="noopener noreferrer">arXiv</a>
+      <a [href]="codeUrl" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </p>
+  </footer>
+</article>

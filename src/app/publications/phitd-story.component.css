@@ -1,0 +1,99 @@
+.story {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0.5rem 1.25rem 4rem;
+  box-sizing: border-box;
+}
+
+.story__back {
+  margin: 0 0 1.25rem;
+  font-size: 0.95rem;
+}
+
+.story__back a,
+.story__meta a,
+.story__chapters a,
+.story__paper {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--link-underline);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.16em;
+}
+
+.story__hero h1 {
+  margin: 0.2rem 0 0.7rem;
+  font-family: 'NIXGONB-Vb', system-ui, sans-serif;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.story__kicker {
+  margin: 0;
+  color: var(--link-underline);
+  font-size: 1.15rem;
+}
+
+.story__kicker :deep(.katex) {
+  color: inherit;
+}
+
+.story__authors,
+.story__meta {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.story__meta {
+  display: flex;
+  gap: 1.1rem;
+  margin-top: 0.7rem;
+}
+
+.story__chapters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 1.2rem;
+  margin-top: 1.3rem;
+}
+
+.story__beat {
+  margin-top: 2.4rem;
+  scroll-margin-top: 1.25rem;
+}
+
+.story__beat h2 {
+  margin: 0 0 0.7rem;
+  font-family: 'NIXGONB-Vb', system-ui, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.story__line {
+  margin: 0 0 0.85rem;
+  font-size: 1.15rem;
+  line-height: 1.55;
+}
+
+.story__beat img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(40, 16, 48, 0.08);
+}
+
+.story__end {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.story__end .story__meta {
+  margin-top: 0;
+  font-size: 1.05rem;
+}

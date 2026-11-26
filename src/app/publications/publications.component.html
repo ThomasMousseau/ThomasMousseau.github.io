@@ -5,18 +5,24 @@
 
   <ul class="pub-list">
     @for (pub of publications; track pub.href + pub.titleMd) {
-      <li class="pub-card-wrap">
+      <li class="pub-card-wrap" [attr.id]="anchorId(pub)">
         <div class="pub-card">
           <div class="pub-card__body">
-            <a
-              class="pub-card__title-link"
-              [href]="pub.href"
-              [attr.target]="linkTarget(pub)"
-              [attr.rel]="linkRel(pub)"
-              (click)="onTitleClick($event, pub)"
-            >
-              <span class="pub-card__title" [innerHTML]="pub.titleMd | richHtml"></span>
-            </a>
+            @if (pub.storyHref) {
+              <a class="pub-card__title-link" [routerLink]="pub.storyHref">
+                <span class="pub-card__title" [innerHTML]="pub.titleMd | richHtml"></span>
+              </a>
+            } @else {
+              <a
+                class="pub-card__title-link"
+                [href]="pub.href"
+                [attr.target]="linkTarget(pub)"
+                [attr.rel]="linkRel(pub)"
+                (click)="onTitleClick($event, pub)"
+              >
+                <span class="pub-card__title" [innerHTML]="pub.titleMd | richHtml"></span>
+              </a>
+            }
             @if (pub.authorsMd) {
               <div class="pub-card__authors" [innerHTML]="pub.authorsMd | richHtml"></div>
             }
@@ -28,6 +34,24 @@
               } @else {
                 {{ venueLabel(pub) }}
               }
+              @if (pub.href.trim() && pub.href.trim() !== '#') {
+                <a
+                  class="pub-card__paper"
+                  [href]="pub.href"
+                  [attr.target]="linkTarget(pub)"
+                  [attr.rel]="linkRel(pub)"
+                  >arXiv</a
+                >
+              }
+              @if (pub.codeHref) {
+                <a
+                  class="pub-card__paper"
+                  [href]="pub.codeHref"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >GitHub</a
+                >
+              }
             </p>
             @if (statusNote(pub)) {
               <p class="pub-card__status">{{ statusNote(pub) }}</p>
@@ -36,9 +60,15 @@
               <div class="pub-card__abstract" [innerHTML]="pub.abstractMd | richHtml"></div>
             }
           </div>
-          <div class="pub-card__thumb" aria-hidden="true">
-            <img [src]="thumbSrc(pub)" alt="" loading="lazy" />
-          </div>
+          @if (pub.storyHref) {
+            <a class="pub-card__thumb" [routerLink]="pub.storyHref" aria-label="Open the φTD story">
+              <img [src]="thumbSrc(pub)" alt="" />
+            </a>
+          } @else {
+            <div class="pub-card__thumb" aria-hidden="true">
+              <img [src]="thumbSrc(pub)" alt="" loading="lazy" />
+            </div>
+          }
         </div>
       </li>
     }

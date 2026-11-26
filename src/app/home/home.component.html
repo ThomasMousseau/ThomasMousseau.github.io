@@ -4,7 +4,14 @@
       <div class="home__intro-text">
         <p>{{ bioOpening }}</p>
         <p>
-          I am a Master's student at Mila where I am working on
+          I am a Master's student at
+          <a
+            class="home__supervisor-link"
+            [href]="milaUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Mila</a>
+          where I am working on
           reinforcement learning (RL) under the supervision of
           <a
             class="home__supervisor-link"
@@ -20,13 +27,37 @@
       <div class="home__intro-photo">
         <img
           [src]="profileImageSrc"
-          width="200"
-          height="200"
+          width="2316"
+          height="3088"
           alt="Thomas Mousseau"
-          loading="lazy"
+          decoding="sync"
         />
       </div>
     </div>
+  </section>
+
+  <section class="home__news" aria-labelledby="news-heading">
+    <h2 id="news-heading" class="home__section-title">News</h2>
+    <ul class="home__news-list">
+      @for (item of news; track item.date + (item.leadTex ?? item.text)) {
+        <li class="home__news-item">
+          <span class="home__news-date">{{ item.date }}</span>
+          <span class="home__news-text">
+            @if (item.leadTex) {
+              <a
+                class="home__news-paper"
+                [href]="publicationHref(item)"
+                (click)="openPublication($event, item)"
+                [innerHTML]="leadMath(item.leadTex)"
+              ></a>
+              {{ item.beforeHighlight }}<span class="home__news-accepted">{{ item.highlight }}</span>{{ item.afterHighlight }}
+            } @else {
+              {{ item.text }}
+            }
+          </span>
+        </li>
+      }
+    </ul>
   </section>
 
   <section class="home__blog" aria-labelledby="technical-blog-heading">

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { RichHtmlPipe } from '../pipes/rich-html.pipe';
 
 export interface PublicationItem {
@@ -10,19 +11,25 @@ export interface PublicationItem {
   abstractMd: string;
   /** Optional thumbnail; defaults to the same placeholder as the technical blog */
   imageUrl?: string;
-  /** Paper link (local PDF, arXiv, OpenReview, etc.) */
+  /** Stable id for in-page links, e.g. news → `/publications#phitd`. */
+  id?: string;
+  /** On-site story. The card title and thumbnail open this. */
+  storyHref?: string;
+  /** Paper link (arXiv, OpenReview, local PDF, etc.) */
   href: string;
   /** Conference / journal; omit or leave empty while not published → shown as “Preprint” */
   venue?: string;
   /** Optional conference / journal page */
   venueHref?: string;
+  /** Optional code repository */
+  codeHref?: string;
   /** Optional note under the venue (e.g. paper not yet available) */
   statusNote?: string;
 }
 
 @Component({
   selector: 'app-publications',
-  imports: [CommonModule, RichHtmlPipe],
+  imports: [CommonModule, RouterLink, RichHtmlPipe],
   templateUrl: './publications.component.html',
   styleUrl: './publications.component.css',
 })
@@ -39,13 +46,27 @@ export class PublicationsComponent {
         '$\\varphi\\text{TD}$: Distributional Reinforcement Learning using Characteristic Functions',
       authorsMd:
         '**Thomas Mousseau**, Tyler Kastner, Davide Baldelli, Amir-massoud Farahmand',
+      id: 'phitd',
       abstractMd: '',
-      imageUrl: '/assets/publications/phitd_cover.jpg',
-      venue: 'Neurips 2026',
+      imageUrl: '/assets/publications/phitd-question.png',
+      storyHref: '/publications/phitd',
+      venue: 'NeurIPS 2026',
       venueHref: 'https://neurips.cc/virtual/2026/loc/paris/poster/154745',
-      href: '/publications/phitd.pdf',
+      href: 'https://arxiv.org/abs/2611.25208',
+      codeHref:
+        'https://github.com/adaptive-agents-lab/Distributional-Reinforcement-Learning-using-Characteristic-Functions',
     },
   ];
+
+  /** News links here as `/publications#phitd`. */
+  anchorId(pub: PublicationItem): string | null {
+    const id = pub.id?.trim();
+    if (id) {
+      return id;
+    }
+    const match = /\/([^/]+)\.pdf$/i.exec(pub.href.trim());
+    return match?.[1] ?? null;
+  }
 
   venueLabel(pub: PublicationItem): string {
     const v = pub.venue?.trim();

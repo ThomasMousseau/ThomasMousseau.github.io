@@ -25,6 +25,7 @@
 
 .pub-card-wrap {
   border-top: 1px solid var(--border-subtle);
+  scroll-margin-top: 1.25rem;
 }
 
 .pub-card-wrap:last-child {
@@ -108,6 +109,10 @@
   text-underline-offset: 0.12em;
 }
 
+.pub-card__paper {
+  margin-left: 0.85rem;
+}
+
 .pub-card__venue strong {
   font-weight: 700;
 }
@@ -134,38 +139,31 @@
   margin-bottom: 0;
 }
 
+a.pub-card__thumb {
+  text-decoration: none;
+}
+
 .pub-card__thumb {
   flex: 0 0 auto;
-  align-self: stretch;
-  position: relative;
-  width: 198px;
-  max-width: 51vw;
+  align-self: center;
+  width: 280px;
+  max-width: 100%;
   overflow: hidden;
   border-radius: 6px;
+  background: #fff;
 }
 
 .pub-card__thumb img {
-  position: absolute;
-  inset: 0;
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
   border-radius: inherit;
-  object-fit: cover;
-  object-position: center 58%;
+  object-fit: contain;
   background: #fff;
 }
 
 @media (max-width: 600px) {
   .pub-card__thumb {
-    align-self: auto;
     width: 100%;
-    max-width: none;
-    /* Same proportions as the previous φTD figure once the photo sits under the text. */
-    aspect-ratio: 5873 / 4494;
-  }
-
-  .pub-card__thumb img {
-    position: static;
   }
 }

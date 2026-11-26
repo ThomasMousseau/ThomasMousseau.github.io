@@ -8,7 +8,9 @@
 }
 
 :root {
-  --page-bg: #edede9;
+  /* Transparent so the wash on .blog-body shows through. Matches src/styles.css. */
+  --page-bg: transparent;
+  --page-wash: #f3ebf1;
   --text: #1a1a1a;
   --muted: #3d3d3d;
   --code-bg: #e8edf2;
@@ -33,13 +35,48 @@
     sans-serif;
 }
 
+html {
+  background-color: var(--page-wash);
+}
+
 .blog-body {
   margin: 0;
   min-height: 100vh;
   font-family: 'NIXGONM-Vb', system-ui, sans-serif;
-  background: var(--page-bg);
+  background-color: var(--page-wash);
+  --corner-gradients:
+    radial-gradient(ellipse 18rem 13rem at 0 0, rgba(198, 160, 242, 1), transparent 72%),
+    radial-gradient(ellipse 16rem 12rem at 100% 0, rgba(246, 168, 196, 0.95), transparent 72%),
+    radial-gradient(ellipse 16rem 12rem at 0 100%, rgba(246, 168, 196, 0.9), transparent 72%),
+    radial-gradient(ellipse 18rem 13rem at 100% 100%, rgba(198, 160, 242, 0.92), transparent 72%);
+  /* Match the root background where elastic scrolling reveals the canvas. */
+  background-image:
+    linear-gradient(var(--page-wash), transparent 3rem, transparent calc(100% - 3rem), var(--page-wash)),
+    var(--corner-gradients);
+  background-repeat: no-repeat;
+  background-attachment: scroll;
   color: var(--text);
   line-height: 1.65;
+}
+
+/* Rollback: first wash. Not applied. Copy onto .blog-body to restore. */
+.blog-body.bg-wash-subtle {
+  background-color: #f6f1f4;
+  background-image:
+    radial-gradient(ellipse 85% 65% at -8% -12%, rgba(214, 186, 245, 0.85), transparent 58%),
+    radial-gradient(ellipse 70% 55% at 108% -8%, rgba(250, 196, 214, 0.8), transparent 54%),
+    radial-gradient(ellipse 65% 50% at 100% 108%, rgba(196, 181, 245, 0.5), transparent 52%),
+    radial-gradient(ellipse 55% 42% at -12% 100%, rgba(255, 214, 226, 0.65), transparent 50%);
+}
+
+@media (max-width: 760px) {
+  .blog-body {
+    --corner-gradients:
+      radial-gradient(ellipse 11rem 8rem at 0 0, rgba(198, 160, 242, 0.95), transparent 72%),
+      radial-gradient(ellipse 10rem 7.5rem at 100% 0, rgba(246, 168, 196, 0.9), transparent 72%),
+      radial-gradient(ellipse 10rem 7.5rem at 0 100%, rgba(246, 168, 196, 0.85), transparent 72%),
+      radial-gradient(ellipse 11rem 8rem at 100% 100%, rgba(198, 160, 242, 0.9), transparent 72%);
+  }
 }
 
 .blog-body ::selection {

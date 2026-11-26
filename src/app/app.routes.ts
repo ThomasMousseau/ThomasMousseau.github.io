@@ -3,6 +3,7 @@ import { AboutComponent } from './about/about.component';
 import { HomeComponent } from './home/home.component';
 import { CvComponent } from './cv/cv.component';
 import { PublicationsComponent } from './publications/publications.component';
+import { PhitdStoryComponent } from './publications/phitd-story.component';
 
 /**
  * Main nav only surfaces Home + Publications. `/about` and `/cv` stay registered for old bookmarks.
@@ -11,6 +12,7 @@ import { PublicationsComponent } from './publications/publications.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'about', component: AboutComponent },
+  { path: 'publications/phitd', component: PhitdStoryComponent },
   { path: 'publications', component: PublicationsComponent },
   { path: 'cv', component: CvComponent },
   { path: '**', redirectTo: '' },
